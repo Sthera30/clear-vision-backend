@@ -21,7 +21,7 @@ app.use(cookieParser())
 
 
 app.use(cors({
-    origin: 'https://clear-vision-frontend.vercel.app/',
+    origin: 'https://clear-vision-frontend.vercel.app',
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true
 }))
