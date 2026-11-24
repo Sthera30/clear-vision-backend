@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import express from 'express'
 import cors from 'cors'
 import mysql from 'mysql2'
@@ -6,9 +7,6 @@ import { uploadImage } from './controller/imageUpload.js'
 import ExpressFormidable from 'express-formidable'
 import cookieParser from 'cookie-parser'
 import { protect } from './middleware/authentication_middleware.js'
-import pool from './controller/db.js'
-import dotenv from 'dotenv'
-dotenv.config()
 
 const app = express()
 
@@ -72,79 +70,30 @@ app.post("/verifyEmail", verifyEmail)
 app.post("/verifyOtp", verifyOtp)
 app.put("/changePassword", change_password)
 
-// NEW - FreeSQLdatabase
-const db = mysql.createConnection({
-    host: 'sql8.freesqldatabase.com',
-    user: 'sql8830029',
-    password: 'pILfevnvBB',
-    database: 'sql8830029',
-    port: 3306
-})
-
-// connect to the database
-db.connect((err) => {
-    if (err) {
-        console.log("Failed to connect to the database!", err);
-    }
-    else {
-        console.log("Connected to the database!");
-    }
-})
-
-export { db }
-
-app.listen(PORT, () => {
-    console.log(`App is listening at port ${PORT}`)
-})
-
-
- /*const db = mysql.createConnection({
-
-    user: 'root',
-    host: 'localhost',
-    password: '',
-    database: 'eyeTestingDB',
+// TiDB Cloud connection
+const db = mysql.createPool({
+    host: process.env.DB_HOST,
+    port: Number(process.env.DB_PORT) || 4000,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    ssl: { minVersion: 'TLSv1.2', rejectUnauthorized: true },
     waitForConnections: true,
     connectionLimit: 10,
-    queueLimit: 0
+    enableKeepAlive: true
 })
 
-//connect to the databse
-
-db.connect((err) => {
-
+// check the connection works
+db.getConnection((err, connection) => {
     if (err) {
-        console.log("Failed to connect to the database!", err);
-    }
-    else {
-        console.log("Connected to the database!");
+        console.log("Failed to connect to the database!", err)
+    } else {
+        console.log("Connected to the database!")
+        connection.release()
     }
 })
 
 export { db }
 
-app.listen(PORT, () => {
-    console.log(`App is listening at port ${PORT}`)
-})
 
-*/
-
-
-/*pool.connect().then(() => console.log("Connected to PostgreSQL"))
-    .catch(err => console.error('Connection error', err.stack));
-
-app.get("/", (req, res) => {
-    console.log("Hello!");
-    res.send("Api is working...")
-})
-
-app.get('/favicon.ico', (req, res) => res.status(204).end());
-
-
-const PORT = 5000;
-
-app.listen((PORT), () => {
-    console.log(`App is listening at port ${PORT}!`);
-})
-
-*/
+ 

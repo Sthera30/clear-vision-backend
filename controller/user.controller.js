@@ -1,9 +1,7 @@
 import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv'
 import { hashPassword, hasConfrimPassword, comparePassword, hashOtp, compareOtp } from '../security/security.js'
 import nodemailer from 'nodemailer'
 import genOTP from 'otp-generator'
-import pool from './db.js'
 import { db } from '../index.js'
 
 
@@ -1773,9 +1771,9 @@ export const searchDoc = async (req, res) => {
         const searchDoctor = () => {
             return new Promise((resolve, reject) => {
 
-                const sql = "SELECT * FROM doctor WHERE doctorName LIKE ?";
+                const sql = "SELECT * FROM doctor WHERE LOWER(doctorName) LIKE ?";
 
-                db.query(sql, [`%${search}%`], (err, result) => {
+                db.query(sql, [`%${search.toLowerCase()}%`], (err, result) => {
                     if (err) reject(err);
                     else resolve(result);
                 });
@@ -1809,9 +1807,9 @@ export const searchAppointment = async (req, res) => {
         const searchAppointments = () => {
             return new Promise((resolve, reject) => {
 
-                const sql = "SELECT * FROM appointment WHERE userName LIKE ?";
+                const sql = "SELECT * FROM appointment WHERE LOWER(userName) LIKE ?";
 
-                db.query(sql, [`%${search}%`], (err, result) => {
+                db.query(sql, [`%${search.toLowerCase()}%`], (err, result) => {
                     if (err) reject(err);
                     else resolve(result);
                 });
