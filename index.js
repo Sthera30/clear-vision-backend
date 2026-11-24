@@ -84,6 +84,7 @@ const db = mysql.createPool({
 })
 
 // check the connection works
+// check the connection works
 db.getConnection((err, connection) => {
     if (err) {
         console.log("Failed to connect to the database!", err)
@@ -93,7 +94,8 @@ db.getConnection((err, connection) => {
     }
 })
 
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running on port ${PORT}`)
+})
+
 export { db }
-
-
- 
